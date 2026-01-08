@@ -1,0 +1,63 @@
+version: "3"
+services:
+  sns-php:
+    container_name: sns-app-container
+    hostname: sns-app-server
+    build: ./php
+    ports:
+      - 8000:8000
+    volumes:
+      - ../:/var/www/html
+      - ./php/php.ini:/usr/local/etc/php/php.ini
+      - ./php/www-custom.conf:/usr/local/etc/php-fpm.d/www-custom.conf
+    depends_on:
+      - sns-db
+
+  sns-mailcatcher:
+    image: schickling/mailcatcher
+    ports:
+       - "1080:1080"
+       - "1025:1025"
+
+  sns-nginx:
+    image: nginx
+    container_name: sns-nginx-container
+    hostname: sns-nginx
+    ports:
+      - 80:80
+    volumes:
+      - ../:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - sns-php
+
+  sns-db:
+    platform: linux/x86_64
+    container_name: sns-db-container
+    hostname: sns-db-server
+    build: ./mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+    command:
+      - --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: sns_database
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+      TZ: Asia/Tokyo
+  sns-phpmyadmin:
+    image: phpmyadmin:latest
+    volumes:
+      - ./php/phpmyadmin-misc-custom.ini:/usr/local/etc/php/conf.d/phpmyadmin-misc.ini
+    ports:
+      - 8888:80
+    depends_on:
+      - sns-db
+    environment:
+    - PMA_HOST=sns-db
+    - PMA_USER=root
+    - PMA_PASSWORD=secret
+
