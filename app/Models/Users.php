@@ -14,7 +14,7 @@ class Users extends Authenticatable
 
   protected $fillable = [
     'id',
-    'apie_id',
+    'user_id',
     'email',
     'name',
     'icon',

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id()->comment('ID');
-            $table->string('apie_id', 10)->unique()->nullable()->default(null)->comment('アピエID');
+            $table->string('user_id', 10)->unique()->nullable()->default(null)->comment('ユーザーID');
             $table->string('email', 255)->unique()->nullable(false)->comment('メールアドレス');
             $table->string('name', 50)->nullable(false)->comment('名前');
             $table->text('detail')->nullable()->default(null)->comment('自己紹介');

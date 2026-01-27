@@ -72,7 +72,7 @@ class LoginController extends Controller
       $this->guard('user')->login($user, true);
       return redirect('/home');
     }
-    else if (str_contains($email, '@apie.jp')) {
+    else if (str_contains($email, '@gmail.com')) {
       return redirect('/regist')->with('data', $data);
     }
 
